@@ -34,7 +34,7 @@ jobs:
 
       - name: Sync resume to S3 bucket
         working-directory: front-end/
-        run: aws s3 sync ./.front-end/index.html s3://$AWS_S3_BUCKET --follow-symlinks
+        run: aws s3 sync ./front-end/index.html s3://$AWS_S3_BUCKET --follow-symlinks
         env:
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}        
 
