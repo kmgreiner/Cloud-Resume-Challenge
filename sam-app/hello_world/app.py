@@ -1,42 +1,33 @@
+import boto3
 import json
+import decimal
 
-# import requests
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, decimal.Decimal):
+            if o % 1 > 0:
+                return float(o)
+            else:
+                return int(o)
+        return super(DecimalEncoder, self).default(o)
 
+counter_table = boto3.resource('dynamodb').Table('vistors')
 
 def lambda_handler(event, context):
-    """Sample pure Lambda function
-
-    Parameters
-    ----------
-    event: dict, required
-        API Gateway Lambda Proxy Input Format
-
-        Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
-
-    context: object, required
-        Lambda Context runtime methods and attributes
-
-        Context doc: https://docs.aws.amazon.com/lambda/latest/dg/python-context-object.html
-
-    Returns
-    ------
-    API Gateway Lambda Proxy Output Format: dict
-
-        Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
-    """
-
-    # try:
-    #     ip = requests.get("http://checkip.amazonaws.com/")
-    # except requests.RequestException as e:
-    #     # Send some context about this error to Lambda Logs
-    #     print(e)
-
-    #     raise e
-
+    response = counter_table.update_item(
+        Key={'vistor_id': 'view_counter'},
+        ExpressionAttributeValues={':inc': decimal.Decimal(1)},
+        UpdateExpression="ADD counter_value :inc"
+        
+    )
+    
+    item = counter_table.get_item(Key={'vistor_id': 'view_counter'})
+    count_views = item['Item']['counter_value']
     return {
         "statusCode": 200,
-        "body": json.dumps({
-            "message": "hello world",
-            # "location": ip.text.replace("\n", "")
-        }),
+        "isBase64Encoded": False,
+        "headers": {
+            "Access-Control-Allow-Origin": "*"
+        },
+        "body": json.dumps(item['Item']['counter_value'], indent=4, cls=DecimalEncoder)
     }
