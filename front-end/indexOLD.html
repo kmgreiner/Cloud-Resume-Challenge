@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+   <title>Test</title>
+   <body>
+      <script>
+         var xhr = new XMLHttpRequest();
+         
+         xhr.open('GET', 'https://wc6ft0uu3d.execute-api.us-east-1.amazonaws.com/Prod/visits', true);
+         
+         xhr.onload = function () {
+           if (xhr.readyState === xhr.DONE) {
+             if (xhr.status === 200) {
+               document.getElementById("visits").innerHTML = '&nbsp;&nbsp;' + xhr.responseText + ' views&nbsp;&nbsp;';
+         
+             }
+           }
+         };
+         
+         xhr.send(null);
+      </script>
+      <div class="d-flex flex-row-reverse">
+         <div class="p2">&nbsp;&nbsp;&nbsp;</div>
+         <div id="visits" class="bg-primary text-white p2"></div>
+      </div>
+   </body>
+</html>
