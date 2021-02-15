@@ -24,11 +24,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: Extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(sed 's/[^a-zA-Z0-9]/-/g' <<<${GITHUB_REF#refs/heads/})"
-        id: extract_branch
-
       #https://github.com/aws-actions/configure-aws-credentials
       - name: Configure AWS credentials for use by other steps
         uses: aws-actions/configure-aws-credentials@v1
@@ -38,8 +33,8 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Sync resume to S3 bucket
-        working-directory: front-end
-        run: aws s3 sync index.html s3://$AWS_S3_BUCKET --follow-symlinks
+        working-directory: front-end/
+        run: aws s3 sync ./index.html s3://$AWS_S3_BUCKET --follow-symlinks
         env:
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}        
 
