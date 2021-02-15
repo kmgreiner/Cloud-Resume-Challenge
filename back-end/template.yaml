@@ -53,9 +53,6 @@ Resources:
 
 Outputs:
   CRCFunction:
-    Description: "API Gateway endpoint URL for Prod stage for Cloud Resume Challange Function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/visits/"
-  CRCFunction:
     Description: "Cloud Resume Challange Function ARN"
     Value: !GetAtt CRCFunction.Arn
   CRCFunctionIamRole:
